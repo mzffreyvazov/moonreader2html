@@ -10,14 +10,33 @@
 <meta charset="UTF-8" />
 <title>Book Review</title>
 <style>
-.note{border:1px solid rgba(189,189,189,.411);padding:10px;margin:10px 0 10px 0;border-radius:0px 5px 5px 0px;border-left:5px solid}.note__text{border:1px solid hsla(0,0%,74%,.164);padding:10px;background-color:#faebd7;margin-top:10px;margin-bottom:10px}.highlight__text{padding-left:10px}body{margin:40px 40px}.grid{background-color:#f0f8ff;margin:-10px;padding:10px;margin-bottom:20px;display:grid;grid-template-areas:'img header' 'img footer';font-family:Impact}.grid>div{text-align:right;padding:20px 0;font-size:25px}h2{font-family:Impact; font-weight:100}
+.note{border:1px solid rgba(189,189,189,.411);padding:10px;margin:10px 0 10px 0;border-radius:0px 5px 5px 0px;border-left:5px solid}.note__text{border:1px solid hsla(0,0%,74%,.164);padding:10px;background-color:#faebd7;margin-top:10px;margin-bottom:10px}.highlight__text{padding-left:10px}body{margin:40px 40px}.grid{background-color:#f0f8ff;margin:-10px;padding:10px;margin-bottom:20px;display:grid;grid-template-areas:'img header' 'img footer';font-family:Impact}.grid>div{text-align:right;padding:20px 0;font-size:25px}h2{font-family:Impact; font-weight:100}.edit-icon{cursor:pointer;display:inline-block;width:20px;height:20px;color:#888;transition:color 0.2s}.edit-icon:hover{color:#333}.edit-icon svg{width:20px;height:20px}.editable{outline:none;padding:5px;border-radius:3px}.editable:focus{background-color:#fffef0;border:1px solid #ccc}
 </style>
+<script>
+function makeEditable(element) {
+    element.contentEditable = true;
+    element.focus();
+    element.style.backgroundColor = '#fffef0';
+}
+function saveEdit(element) {
+    element.contentEditable = false;
+    element.style.backgroundColor = '';
+}
+function editHighlight(noteElement) {
+    const highlightText = noteElement.querySelector('.highlight__text');
+    makeEditable(highlightText);
+}
+</script>
 </head>
 <body>
  </div> <div class="grid"> <img src="data:image/png;base64, {{image}}" style="grid-area: img; width: clamp(20px, 15vw, 500px)"> <div style="grid-area: header"> {{book_name}} </br> </div> <div style="grid-area: footer; font-size: clamp(10px, 2vw, 25px) !important;">{{author}}  </div> </div> <h2>Highlights & Notes</h2>
 {% for highlight in highlights %}
 <div class="note" style="border-left-color:#{{highlight.color}}">
-<div class="note__highlight" style="position: relative;"><div class="highlight__text">{{highlight.text}}</div></div>{% if highlight.note %}<div class="note__text">{{highlight.note}}</div>{% endif %}<div style="color: rgb(187, 187, 187); text-align: right; font-family: Impact;">{{highlight.location}}</div>
+<div class="note__highlight" style="position: relative;"><div class="highlight__text editable" onblur="saveEdit(this)">{{highlight.text}}</div></div>{% if highlight.note %}<div class="note__text editable" onclick="makeEditable(this)" onblur="saveEdit(this)">{{highlight.note}}</div>{% endif %}<div style="text-align: right; margin-top: 10px;">
+        <span class="edit-icon" onclick="editHighlight(this.closest('.note'))" title="Edit highlight">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+        </span>
+    </div>
     </div>
 
 {% endfor %}
